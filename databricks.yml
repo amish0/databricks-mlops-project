@@ -1,14 +1,12 @@
 bundle:
-  name: databricks-mlops-sales-demo
+  name: sales_mlops
 
 variables:
   databricks_host:
-    description: Databricks workspace URL supplied by GitHub Actions.
-  node_type_id:
-    description: Cloud-specific cluster node type supplied by GitHub Actions.
+    description: Databricks workspace URL
 
 workspace:
-  host: ${env.DATABRICKS_HOST}
+  host: ${var.databricks_host}
 
 resources:
   jobs:
