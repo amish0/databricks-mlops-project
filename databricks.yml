@@ -8,7 +8,7 @@ variables:
     description: Cloud-specific cluster node type supplied by GitHub Actions.
 
 workspace:
-  host: ${var.databricks_host}
+  host: ${env.DATABRICKS_HOST}
 
 resources:
   jobs:
