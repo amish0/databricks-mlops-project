@@ -1,0 +1,49 @@
+bundle:
+  name: databricks-mlops-sales-demo
+
+variables:
+  databricks_host:
+    description: Databricks workspace URL supplied by GitHub Actions.
+  node_type_id:
+    description: Cloud-specific cluster node type supplied by GitHub Actions.
+
+workspace:
+  host: ${var.databricks_host}
+
+resources:
+  jobs:
+    sales_mlops_pipeline:
+      name: Sales MLOps Demo Pipeline
+      max_concurrent_runs: 1
+      job_clusters:
+        - job_cluster_key: sales_demo_cluster
+          new_cluster:
+            spark_version: 16.4.x-scala2.12
+            node_type_id: ${var.node_type_id}
+            num_workers: 1
+            data_security_mode: SINGLE_USER
+            autotermination_minutes: 20
+      tasks:
+        - task_key: sales_pipeline
+          job_cluster_key: sales_demo_cluster
+          libraries:
+            - pypi:
+                package: joblib>=1.3
+            - pypi:
+                package: pandas>=2.0
+            - pypi:
+                package: PyYAML>=6.0
+            - pypi:
+                package: scikit-learn>=1.3
+          notebook_task:
+            notebook_path: ../notebooks/databricks_sales_pipeline.py
+            source: WORKSPACE
+            base_parameters:
+              project_root: ${workspace.file_path}
+
+targets:
+  prod:
+    default: true
+    mode: production
+    workspace:
+      root_path: /Shared/.bundle/${bundle.name}/${bundle.target}

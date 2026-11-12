@@ -1,0 +1,33 @@
+stages:
+  etl:
+    cmd: python etl/sales_etl.py --input data/sales.csv --output data/processed_sales.csv
+    deps:
+      - data/sales.csv
+      - etl/sales_etl.py
+    outs:
+      - data/processed_sales.csv
+  train:
+    cmd: python ml/train.py --data data/processed_sales.csv --model models/sales_model.joblib --params params.yaml
+    deps:
+      - data/processed_sales.csv
+      - ml/train.py
+    params:
+      - params.yaml:
+          - random_state
+          - test_size
+          - model
+    outs:
+      - models/sales_model.joblib
+  evaluate:
+    cmd: python ml/evaluate.py --data data/processed_sales.csv --model models/sales_model.joblib --params params.yaml --metrics reports/metrics.json
+    deps:
+      - data/processed_sales.csv
+      - models/sales_model.joblib
+      - ml/evaluate.py
+    params:
+      - params.yaml:
+          - random_state
+          - test_size
+    metrics:
+      - reports/metrics.json:
+          cache: false
