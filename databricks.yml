@@ -6,7 +6,7 @@ variables:
     description: Databricks workspace URL
 
 workspace:
-  host: ${var.databricks_host}
+  host: https://dbc-1341757c-1f35.cloud.databricks.com
 
 resources:
   jobs:
